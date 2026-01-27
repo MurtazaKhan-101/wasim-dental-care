@@ -10,6 +10,7 @@ export default function PrintPrescriptionPage() {
     const { id } = useParams()
     const router = useRouter()
     const [patient, setPatient] = useState(null)
+    const [doctorsList, setDoctorsList] = useState([])
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
 
@@ -19,16 +20,26 @@ export default function PrintPrescriptionPage() {
 
     const fetchPatient = async () => {
         // Fetch patient + doctor info
-        const { data, error } = await supabase
-            .from('patients')
-            .select(`
-                *,
-                doctor:profiles(full_name)
-            `)
-            .eq('id', id)
-            .single()
+        const [
+            { data: patientData, error: patientError },
+            { data: doctorsData, error: doctorsError }
+        ] = await Promise.all([
+            supabase
+                .from('patients')
+                .select(`
+                    *,
+                    doctor:profiles(full_name)
+                `)
+                .eq('id', id)
+                .single(),
+            supabase
+                .from('doctors')
+                .select('name')
+                .order('name')
+        ])
 
-        if (data) setPatient(data)
+        if (patientData) setPatient(patientData)
+        if (doctorsData) setDoctorsList(doctorsData)
         setLoading(false)
     }
 
@@ -51,7 +62,7 @@ export default function PrintPrescriptionPage() {
     // Diagnosis below that
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8 print:bg-white print:p-0">
+        <div className="min-h-screen bg-gray-100 p-8 print:min-h-0 print:bg-white print:p-0 print:overflow-hidden">
             {/* Controls - Hidden on print */}
             <div className="max-w-[210mm] mx-auto mb-6 flex justify-between items-center print:hidden">
                 <button
@@ -137,7 +148,13 @@ export default function PrintPrescriptionPage() {
                         className="text-white font-bold text-lg font-sans"
                         style={{ width: '100%', textAlign: 'center', display: 'block' }}
                     >
-                        Dr. {patient.doctor?.full_name || 'Wasim Dental Care'}
+                        {doctorsList.length > 0 || patient.doctor?.full_name
+                            ? [
+                                ...(patient.doctor?.full_name ? [{ name: 'Dr. ' + patient.doctor.full_name }] : []),
+                                ...doctorsList
+                            ].map(d => d.name).join(' | ')
+                            : 'Wasim Dental Care'
+                        }
                     </span>
                 </div>
 
@@ -155,11 +172,16 @@ export default function PrintPrescriptionPage() {
                         margin: 0;
                     }
                     html, body {
-                        height: 297mm !important;
+                        width: 210mm;
+                        height: 297mm;
                         overflow: hidden !important;
                         margin: 0 !important;
                         padding: 0 !important;
-                        background: white;
+                        background: white !important;
+                    }
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
                     }
                     body * {
                         visibility: hidden;
@@ -176,8 +198,8 @@ export default function PrintPrescriptionPage() {
                         margin: 0;
                         padding: 0;
                         background: white;
-                        -webkit-print-color-adjust: exact;
-                        print-color-adjust: exact;
+                        overflow: hidden;
+                        z-index: 9999;
                     }
                 }
             `}</style>

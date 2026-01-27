@@ -33,15 +33,15 @@ export default function DashboardPage() {
                 .gte('created_at', `${today}T00:00:00`)
                 .lt('created_at', `${today}T23:59:59`)
 
-            // Active Shifts
-            const { count: activeShifts } = await supabase
-                .from('shifts')
+            // Total Clinic Doctors
+            const { count: totalDoctors } = await supabase
+                .from('doctors')
                 .select('*', { count: 'exact', head: true })
 
             setStats({
                 totalPatients: totalPatients || 0,
                 todayVisits: todayVisits || 0,
-                activeShifts: activeShifts || 0
+                totalDoctors: totalDoctors || 0
             })
         } catch (error) {
             console.error('Error fetching stats:', error)
@@ -108,17 +108,17 @@ export default function DashboardPage() {
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
                             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <Calendar className="w-6 h-6 text-purple-600" />
+                                <Users className="w-6 h-6 text-purple-600" />
                             </div>
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-gray-500 truncate">Active Shifts</dt>
+                                <dt className="text-sm font-medium text-gray-500 truncate">Total Clinic Doctors</dt>
                                 <dd className="text-2xl font-bold text-gray-900">
                                     {loading ? (
                                         <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                                     ) : (
-                                        stats.activeShifts
+                                        stats.totalDoctors
                                     )}
                                 </dd>
                             </dl>
@@ -158,6 +158,21 @@ export default function DashboardPage() {
                         <div>
                             <p className="font-medium text-gray-900">View Patients</p>
                             <p className="text-sm text-gray-500">Browse patient records</p>
+                        </div>
+                    </a>
+
+                    <a
+                        href="/admin/clinic-doctors"
+                        className="flex items-center gap-3 p-4 rounded-lg border-2 border-dashed border-gray-300 hover:border-indigo-500 hover:bg-indigo-50 transition-all group"
+                    >
+                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
+                            <svg className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p className="font-medium text-gray-900">Manage Doctors</p>
+                            <p className="text-sm text-gray-500">Manage clinic doctors</p>
                         </div>
                     </a>
                 </div>

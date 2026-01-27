@@ -46,9 +46,10 @@ export default function Sidebar({ userRole }) {
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
         { name: 'Add Patient', href: '/patients/new', icon: UserPlus },
         { name: 'Patients List', href: '/patients', icon: Users },
-        { name: 'Doctors', href: '/admin/doctors', icon: Stethoscope, adminOnly: true },
-        { name: 'Shifts', href: '/admin/shifts', icon: Calendar, adminOnly: true },
-        { name: 'Assignments', href: '/admin/assignments', icon: Calendar, adminOnly: true },
+        // { name: 'Doctors', href: '/admin/doctors', icon: Stethoscope, adminOnly: true },
+        { name: 'Clinic Doctors', href: '/admin/clinic-doctors', icon: UserPlus, adminOnly: true },
+        // { name: 'Shifts', href: '/admin/shifts', icon: Calendar, adminOnly: true },
+        // { name: 'Assignments', href: '/admin/assignments', icon: Calendar, adminOnly: true },
     ]
 
     const filteredNavigation = navigation.filter(item => {
@@ -107,7 +108,7 @@ export default function Sidebar({ userRole }) {
 
             {/* Bottom Section */}
             <div className="border-t border-slate-700/50 p-4 space-y-3">
-                <ShiftIndicator />
+                {/* <ShiftIndicator /> */}
                 <button
                     onClick={() => setLogoutModalOpen(true)}
                     className="group flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-red-500/10 hover:text-red-400 transition-all"

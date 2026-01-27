@@ -33,3 +33,38 @@ CREATE POLICY "Doctors can create patients" ON patients
     auth.uid() = doctor_id OR
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin')
   );
+
+-- Create doctors table (separate from Auth profiles)
+CREATE TABLE IF NOT EXISTS doctors (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  specialization TEXT,
+  qualification TEXT,
+  contact_number TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
+
+-- Policies
+-- Everyone (Authenticated) can view doctors (needed for print page)
+CREATE POLICY "Doctors are viewable by everyone" ON doctors
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Only super_admin can insert, update, delete
+CREATE POLICY "Super admins can insert doctors" ON doctors
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin')
+  );
+
+CREATE POLICY "Super admins can update doctors" ON doctors
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin')
+  );
+
+CREATE POLICY "Super admins can delete doctors" ON doctors
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin')
+  );
