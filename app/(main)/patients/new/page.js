@@ -122,9 +122,9 @@ export default function NewPatientPage() {
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold text-gray-900">Register New Patient</h1>
-                <p className="mt-2 text-gray-600">
+                {/* <p className="mt-2 text-gray-600">
                     Current Shift: <span className="font-semibold text-indigo-600">{currentShift?.name || 'Admin Override'}</span>
-                </p>
+                </p> */}
             </div>
 
             {/* Form Card */}

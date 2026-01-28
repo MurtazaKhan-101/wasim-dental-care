@@ -128,14 +128,14 @@ export default function PatientsPage() {
                                                 )}
                                             </div>
 
-                                            <div className="mt-2 text-xs text-gray-500">
+                                            {/* <div className="mt-2 text-xs text-gray-500">
                                                 Treated by: <span className="font-medium text-gray-700">{patient.doctor?.full_name || 'Unknown'}</span>
                                                 {patient.shift?.name && (
                                                     <span className="ml-2 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded">
                                                         {patient.shift.name}
                                                     </span>
                                                 )}
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
 
