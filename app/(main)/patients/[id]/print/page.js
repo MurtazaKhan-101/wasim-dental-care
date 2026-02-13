@@ -169,7 +169,7 @@ export default function PrintPrescriptionPage() {
                 @media print {
                     @page {
                         size: A4;
-                        margin: 0;
+                        margin: 8mm;
                     }
                     html, body {
                         width: 210mm;
